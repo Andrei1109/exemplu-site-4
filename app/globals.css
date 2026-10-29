@@ -1,0 +1,101 @@
+@import 'tailwindcss';
+@import 'tw-animate-css';
+@import 'shadcn/tailwind.css';
+
+@custom-variant dark (&:is(.dark *));
+
+@theme inline {
+  --font-serif: var(--font-instrument), 'Times New Roman', serif;
+  --font-sans: var(--font-inter-tight), system-ui, sans-serif;
+
+  --color-ink: var(--film-ink);
+  --color-paper: var(--film-paper);
+  --color-grain: var(--film-grain);
+  --color-wine: var(--film-wine);
+
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-primary: var(--primary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-border: var(--border);
+  --color-ring: var(--ring);
+  --color-input: var(--input);
+  --color-destructive: var(--destructive);
+
+  --radius-sm: calc(var(--radius) * 0.6);
+  --radius-md: calc(var(--radius) * 0.8);
+  --radius-lg: var(--radius);
+}
+
+/* Defaults; the invitation config overrides --film-* on <main>. */
+:root,
+.film {
+  --film-ink: #101010;
+  --film-paper: #f3f0eb;
+  --film-grain: #777674;
+  --film-wine: #6d3542;
+}
+
+:root,
+.film {
+  color-scheme: dark;
+  --background: var(--film-ink);
+  --foreground: var(--film-paper);
+  --primary: var(--film-wine);
+  --primary-foreground: var(--film-paper);
+  --muted-foreground: color-mix(in oklab, var(--film-paper) 68%, var(--film-ink));
+  --border: color-mix(in oklab, var(--film-paper) 18%, transparent);
+  --input: color-mix(in oklab, var(--film-paper) 35%, transparent);
+  --ring: var(--film-paper);
+  --destructive: #f0a3a3;
+  --radius: 0.125rem;
+}
+
+@layer base {
+  * {
+    @apply border-border outline-ring/50;
+  }
+  html {
+    scroll-behavior: smooth;
+    -webkit-text-size-adjust: 100%;
+  }
+  body {
+    @apply bg-background text-foreground font-sans;
+    text-rendering: optimizeLegibility;
+  }
+  ::selection {
+    background: var(--film-wine);
+    color: var(--film-paper);
+  }
+  :focus-visible {
+    outline: 2px solid var(--ring);
+    outline-offset: 3px;
+  }
+  @media (prefers-reduced-motion: reduce) {
+    html {
+      scroll-behavior: auto;
+    }
+  }
+}
+
+/* Static 35mm grain — no animation, no blend mode, cheap on phones. */
+.film-grain::after {
+  content: '';
+  position: fixed;
+  inset: 0;
+  z-index: 60;
+  pointer-events: none;
+  opacity: 0.07;
+  background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='160' height='160'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/><feColorMatrix values='0 0 0 0 1  0 0 0 0 1  0 0 0 0 1  0 0 0 0.55 0'/></filter><rect width='100%' height='100%' filter='url(%23n)'/></svg>");
+}
+
+/* Shown when a configured photo is missing — a quiet, intentional frame. */
+.film-fallback {
+  background:
+    radial-gradient(120% 90% at 50% 40%, color-mix(in oklab, var(--film-grain) 28%, var(--film-ink)) 0%, var(--film-ink) 75%);
+}
+
+.tabular {
+  font-variant-numeric: tabular-nums;
+}
